@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 import {
 	CssBaseline,
 	Container,
@@ -21,6 +23,11 @@ const SignUp = () => {
 		password: '',
 		showPassword: false,
 	});
+	const [error, setError] = useState({
+		isError: false,
+		message: '',
+	});
+	const history = useHistory();
 
 	const handleChange = (e) => {
 		const { name, value } = e.currentTarget;
@@ -34,6 +41,26 @@ const SignUp = () => {
 		}));
 	};
 
+	const handleClickSignUpBtn = () => {
+		const endpoint = 'http://localhost:5000/signup';
+
+		const registerUser = {
+			email: values.email,
+			password: values.password,
+		};
+
+		axios
+			.post(endpoint, registerUser)
+			.then(() => history.push('/'))
+			.catch((err) => {
+				console.error(err.message);
+				setError({
+					isError: true,
+					message: err.response.message || err.message,
+				});
+			});
+	};
+
 	return (
 		<React.Fragment>
 			<CssBaseline />
@@ -41,7 +68,16 @@ const SignUp = () => {
 				<Typography variant="h4" component="h1" style={{ textAlign: 'center' }}>
 					Sign Up
 				</Typography>
-				<Stack sx={{ my: 5 }} spacing={2}>
+				<Box>
+					<Typography
+						variant="h6"
+						component="p"
+						style={{ textAlign: 'center' }}
+					>
+						{error.isError ? error.message : ''}
+					</Typography>
+				</Box>
+				<Stack sx={{ my: 5 }} spacing={4}>
 					<FormControl variant="standard">
 						<InputLabel htmlFor="email">Email</InputLabel>
 						<Input
@@ -75,7 +111,11 @@ const SignUp = () => {
 					</FormControl>
 				</Stack>
 				<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-					<Button variant="contained" sx={{ width: '70%' }}>
+					<Button
+						variant="contained"
+						sx={{ width: '70%' }}
+						onClick={handleClickSignUpBtn}
+					>
 						sign up
 					</Button>
 				</Box>
