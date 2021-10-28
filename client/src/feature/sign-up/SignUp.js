@@ -74,7 +74,7 @@ const SignUp = () => {
 
 		axios
 			.post(endpoint, registerUser)
-			.then(() => history.push('/'))
+			.then(() => history.push('/recipes'))
 			.catch((err) => {
 				console.error(err.message);
 				setResponseError({
@@ -107,8 +107,8 @@ const SignUp = () => {
 		<React.Fragment>
 			<CssBaseline />
 			<Container maxWidth="xs" sx={{ width: '80%', mt: 5 }}>
-				<Typography variant="h4" component="h1" style={{ textAlign: 'center' }}>
-					Sign Up
+				<Typography variant="h4" component="h1" align="center">
+					SIGN UP
 				</Typography>
 				<Stack sx={{ my: 5 }} spacing={4}>
 					<FormControl
@@ -150,7 +150,7 @@ const SignUp = () => {
 							endAdornment={
 								<InputAdornment position="end">
 									<IconButton onClick={handleClickVisibiltyIcon}>
-										{values.showPassword ? <VisibilityOff /> : <Visibility />}
+										{values.showPassword ? <Visibility /> : <VisibilityOff />}
 									</IconButton>
 								</InputAdornment>
 							}

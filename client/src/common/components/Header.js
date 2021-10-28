@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
 	AppBar,
 	Toolbar,
@@ -25,9 +26,18 @@ const Header = () => {
 						<MenuIcon />
 					</IconButton>
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-						Foodie Pal
+						<Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+							Foodie Pal
+						</Link>
 					</Typography>
-					<Button color="inherit">Login</Button>
+					<Button color="inherit">
+						<Link
+							to="/login"
+							style={{ textDecoration: 'none', color: 'inherit' }}
+						>
+							Login
+						</Link>
+					</Button>
 				</Toolbar>
 			</AppBar>
 		</React.Fragment>
