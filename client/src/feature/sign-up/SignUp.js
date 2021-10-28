@@ -13,25 +13,50 @@ import {
 	Button,
 	Typography,
 	Box,
+	FormHelperText,
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const SignUp = () => {
+	// states
 	const [values, setValues] = useState({
 		email: '',
 		password: '',
 		showPassword: false,
 	});
-	const [error, setError] = useState({
+
+	const [responseError, setResponseError] = useState({
 		isError: false,
 		message: '',
 	});
+
+	const [isValid, setIsValid] = useState({
+		email: true,
+		password: true,
+	});
+
 	const history = useHistory();
 
+	// for http request
+	const endpoint = 'http://localhost:5000/signup';
+
+	// regular expressions
+	const emailRegex = new RegExp(
+		'^[a-zA-Z0-9_+-]+(.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*.)+[a-zA-Z]{2,}$',
+		'gm'
+	);
+	const passwordRegex = new RegExp('^(?=.*)(?=.*[a-zA-Zd]).{6,}$', 'gm');
+
+	// event handlers
 	const handleChange = (e) => {
 		const { name, value } = e.currentTarget;
 		setValues({ ...values, [name]: value });
+		name === 'password' && validateInputValues(e);
+	};
+
+	const handleBlur = (e) => {
+		validateInputValues(e);
 	};
 
 	const handleClickVisibiltyIcon = () => {
@@ -42,8 +67,6 @@ const SignUp = () => {
 	};
 
 	const handleClickSignUpBtn = () => {
-		const endpoint = 'http://localhost:5000/signup';
-
 		const registerUser = {
 			email: values.email,
 			password: values.password,
@@ -54,11 +77,30 @@ const SignUp = () => {
 			.then(() => history.push('/'))
 			.catch((err) => {
 				console.error(err.message);
-				setError({
+				setResponseError({
 					isError: true,
-					message: err.response.message || err.message,
+					message: err.response.data.message || err.message,
 				});
+				setTimeout(
+					() => setResponseError({ isError: false, message: '' }),
+					3000
+				);
 			});
+	};
+
+	// validate all input values
+	const validateInputValues = (e) => {
+		const { name, value } = e.currentTarget;
+		let targetRegex;
+		if (name === 'email') {
+			targetRegex = emailRegex;
+		} else {
+			targetRegex = passwordRegex;
+		}
+
+		targetRegex.test(value)
+			? setIsValid({ ...isValid, [name]: true })
+			: setIsValid({ ...isValid, [name]: false });
 	};
 
 	return (
@@ -68,38 +110,43 @@ const SignUp = () => {
 				<Typography variant="h4" component="h1" style={{ textAlign: 'center' }}>
 					Sign Up
 				</Typography>
-				<Box>
-					<Typography
-						variant="h6"
-						component="p"
-						style={{ textAlign: 'center' }}
-					>
-						{error.isError ? error.message : ''}
-					</Typography>
-				</Box>
 				<Stack sx={{ my: 5 }} spacing={4}>
-					<FormControl variant="standard">
+					<FormControl
+						error={!isValid.email || responseError.isError ? true : false}
+						variant="standard"
+					>
 						<InputLabel htmlFor="email">Email</InputLabel>
 						<Input
+							error={!isValid.email || responseError.isError ? true : false}
 							name="email"
 							id="email"
 							type="email"
 							value={values.email}
 							required
 							onChange={handleChange}
-							fillWidth
+							onBlur={handleBlur}
+							fullWidth
 						/>
+						<FormHelperText error>
+							{isValid.email ? '' : 'Please enter a valid email.'}
+							{responseError.isError ? responseError.message : ''}
+						</FormHelperText>
 					</FormControl>
-					<FormControl variant="standard">
+					<FormControl
+						error={isValid.password ? false : true}
+						variant="standard"
+					>
 						<InputLabel htmlFor="password">Password</InputLabel>
 						<Input
+							error={isValid.password ? false : true}
 							name="password"
 							id="password"
 							type={values.showPassword ? 'text' : 'password'}
 							value={values.password}
 							required
-							fillWidth
+							fullWidth
 							onChange={handleChange}
+							onBlur={handleBlur}
 							endAdornment={
 								<InputAdornment position="end">
 									<IconButton onClick={handleClickVisibiltyIcon}>
@@ -108,10 +155,22 @@ const SignUp = () => {
 								</InputAdornment>
 							}
 						/>
+						<FormHelperText error>
+							{isValid.password
+								? ''
+								: 'Password should be at least 6 characters.'}
+						</FormHelperText>
 					</FormControl>
 				</Stack>
 				<Box sx={{ display: 'flex', justifyContent: 'center' }}>
 					<Button
+						disabled={
+							Object.values(isValid).every(Boolean) &&
+							values.email &&
+							values.password
+								? false
+								: true
+						}
 						variant="contained"
 						sx={{ width: '70%' }}
 						onClick={handleClickSignUpBtn}
