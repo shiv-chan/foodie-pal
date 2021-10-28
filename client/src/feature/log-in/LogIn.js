@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import axios from 'axios';
@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { userContext } from '../../common/context';
 
 const LogIn = () => {
 	// states
@@ -29,6 +30,8 @@ const LogIn = () => {
 
 	const { enqueueSnackbar } = useSnackbar();
 	const history = useHistory();
+	const { userState } = useContext(userContext);
+	const [user, setUser] = userState;
 
 	// for http request
 	const endpoint = 'http://localhost:5000/login';
@@ -56,6 +59,12 @@ const LogIn = () => {
 			.post(endpoint, loggingInUser)
 			.then((res) => {
 				logInSnackbar(res.data.message, 'success');
+				setUser({
+					email: values.email,
+					userName: '',
+					icon: '',
+					isLoggedIn: true,
+				});
 				history.push('/recipes');
 			})
 			.catch((err) => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import {
 	AppBar,
@@ -9,8 +9,22 @@ import {
 	CssBaseline,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { userContext } from '../context';
 
 const Header = () => {
+	const { userState } = useContext(userContext);
+	const [user, setUser] = userState;
+	const { isLoggedIn } = user;
+
+	const handleLogoutClick = () => {
+		setUser({
+			email: '',
+			userName: '',
+			userIcon: '',
+			isLoggedIn: false,
+		});
+	};
+
 	return (
 		<React.Fragment>
 			<CssBaseline />
@@ -31,12 +45,22 @@ const Header = () => {
 						</Link>
 					</Typography>
 					<Button color="inherit">
-						<Link
-							to="/login"
-							style={{ textDecoration: 'none', color: 'inherit' }}
-						>
-							Login
-						</Link>
+						{isLoggedIn ? (
+							<Link
+								to="/login"
+								style={{ textDecoration: 'none', color: 'inherit' }}
+								onClick={handleLogoutClick}
+							>
+								Logout
+							</Link>
+						) : (
+							<Link
+								to="/login"
+								style={{ textDecoration: 'none', color: 'inherit' }}
+							>
+								Login
+							</Link>
+						)}
 					</Button>
 				</Toolbar>
 			</AppBar>
