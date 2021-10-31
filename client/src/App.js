@@ -6,6 +6,7 @@ import Footer from './common/components/Footer';
 import SignUp from './feature/sign-up/SignUp';
 import LogIn from './feature/log-in/LogIn';
 import Recipes from './feature/recipes/Recipes';
+import DetailedRecipe from './feature/recipes/DetailedRecipe';
 
 const App = () => {
 	return (
@@ -15,6 +16,7 @@ const App = () => {
 				<Route exact path="/" component={Home} />
 				<Route path="/signup" component={SignUp} />
 				<Route path="/login" component={LogIn} />
+				<Route path="/recipes/:recipeId" component={DetailedRecipe} />
 				<Route path="/recipes" component={Recipes} />
 			</Switch>
 			<Footer />

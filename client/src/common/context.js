@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import fakeData from '../fakeData';
 
-export const userContext = React.createContext();
+export const context = React.createContext();
 
 const ContextProvider = ({ children }) => {
 	const userState = useState({
@@ -11,9 +12,9 @@ const ContextProvider = ({ children }) => {
 	});
 
 	return (
-		<userContext.Provider value={{ userState }}>
+		<context.Provider value={{ userState, fakeData }}>
 			{children}
-		</userContext.Provider>
+		</context.Provider>
 	);
 };
 
