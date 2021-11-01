@@ -16,7 +16,7 @@ import {
 	useMediaQuery,
 } from '@mui/material';
 
-const DetailedRecipe = (props) => {
+const DetailedRecipe = () => {
 	const { fakeData } = useContext(context);
 	const { recipeId } = useParams();
 	const [rows, setRows] = useState([]);

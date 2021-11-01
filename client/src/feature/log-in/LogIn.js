@@ -3,7 +3,6 @@ import { useHistory, Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import axios from 'axios';
 import {
-	CssBaseline,
 	Container,
 	Stack,
 	FormControl,
@@ -18,7 +17,7 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { userContext } from '../../common/context';
+import { context } from '../../common/context';
 
 const LogIn = () => {
 	// states
@@ -30,7 +29,7 @@ const LogIn = () => {
 
 	const { enqueueSnackbar } = useSnackbar();
 	const history = useHistory();
-	const { userState } = useContext(userContext);
+	const { userState } = useContext(context);
 	const [user, setUser] = userState;
 
 	// for http request
@@ -85,76 +84,73 @@ const LogIn = () => {
 	}
 
 	return (
-		<React.Fragment>
-			<CssBaseline />
-			<Container maxWidth="xs" sx={{ width: '80%', mt: 5 }}>
-				<Typography variant="h4" component="h1" align="center">
-					LOGIN
-				</Typography>
-				<Stack sx={{ my: 5 }} spacing={4}>
-					<FormControl variant="standard">
-						<InputLabel htmlFor="email">Email</InputLabel>
-						<Input
-							name="email"
-							id="email"
-							type="email"
-							value={values.email}
-							required
-							onChange={handleChange}
-							fullWidth
-						/>
-					</FormControl>
-					<FormControl variant="standard">
-						<InputLabel htmlFor="password">Password</InputLabel>
-						<Input
-							name="password"
-							id="password"
-							type={values.showPassword ? 'text' : 'password'}
-							value={values.password}
-							required
-							fullWidth
-							onChange={handleChange}
-							endAdornment={
-								<InputAdornment position="end">
-									<IconButton onClick={handleClickVisibiltyIcon}>
-										{values.showPassword ? <Visibility /> : <VisibilityOff />}
-									</IconButton>
-								</InputAdornment>
-							}
-						/>
-					</FormControl>
-				</Stack>
-				<Box display="flex" justifyContent="center">
-					<Button
-						disabled={values.email && values.password ? false : true}
-						variant="contained"
-						sx={{ width: '70%' }}
-						onClick={handleClickLogInBtn}
-					>
-						log in
-					</Button>
-				</Box>
-				<Box
-					mt={4}
-					display="flex"
-					flexDirection="column"
-					alignItems="center"
-					rowGap={1}
+		<Container maxWidth="xs" sx={{ width: '80%', mt: 5 }}>
+			<Typography variant="h4" component="h1" align="center">
+				LOGIN
+			</Typography>
+			<Stack sx={{ my: 5 }} spacing={4}>
+				<FormControl variant="standard">
+					<InputLabel htmlFor="email">Email</InputLabel>
+					<Input
+						name="email"
+						id="email"
+						type="email"
+						value={values.email}
+						required
+						onChange={handleChange}
+						fullWidth
+					/>
+				</FormControl>
+				<FormControl variant="standard">
+					<InputLabel htmlFor="password">Password</InputLabel>
+					<Input
+						name="password"
+						id="password"
+						type={values.showPassword ? 'text' : 'password'}
+						value={values.password}
+						required
+						fullWidth
+						onChange={handleChange}
+						endAdornment={
+							<InputAdornment position="end">
+								<IconButton onClick={handleClickVisibiltyIcon}>
+									{values.showPassword ? <Visibility /> : <VisibilityOff />}
+								</IconButton>
+							</InputAdornment>
+						}
+					/>
+				</FormControl>
+			</Stack>
+			<Box display="flex" justifyContent="center">
+				<Button
+					disabled={values.email && values.password ? false : true}
+					variant="contained"
+					sx={{ width: '70%' }}
+					onClick={handleClickLogInBtn}
 				>
-					<Typography variant="body1" component="p" align="center">
-						Don't have an account yet?
-					</Typography>
-					<Link
-						to="/signup"
-						style={{
-							color: 'inherit',
-						}}
-					>
-						Create an account
-					</Link>
-				</Box>
-			</Container>
-		</React.Fragment>
+					log in
+				</Button>
+			</Box>
+			<Box
+				mt={4}
+				display="flex"
+				flexDirection="column"
+				alignItems="center"
+				rowGap={1}
+			>
+				<Typography variant="body1" component="p" align="center">
+					Don't have an account yet?
+				</Typography>
+				<Link
+					to="/signup"
+					style={{
+						color: 'inherit',
+					}}
+				>
+					Create an account
+				</Link>
+			</Box>
+		</Container>
 	);
 };
 

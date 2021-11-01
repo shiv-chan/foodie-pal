@@ -9,10 +9,10 @@ import {
 	CssBaseline,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { userContext } from '../context';
+import { context } from '../context';
 
 const Header = () => {
-	const { userState } = useContext(userContext);
+	const { userState } = useContext(context);
 	const [user, setUser] = userState;
 	const { isLoggedIn } = user;
 

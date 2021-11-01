@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { SnackbarProvider } from 'notistack';
 import ContextProvider from './common/context';
 import { CssBaseline } from '@mui/material';
-import { StyledEngineProvider } from '@mui/material/styles';
 
 import App from './App';
 
