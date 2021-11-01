@@ -41,7 +41,7 @@ const DetailedRecipe = () => {
 
 	// recipe image size
 	const recipeImageSize = () =>
-		isBiggerLaptopSize ? "height: '300px'" : "height: '200px'";
+		isBiggerLaptopSize ? { height: '300px' } : { height: '200px' };
 
 	return (
 		<Container sx={{ maxWidth: '700px !important' }}>
