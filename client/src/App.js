@@ -7,6 +7,7 @@ import SignUp from './feature/sign-up/SignUp';
 import LogIn from './feature/log-in/LogIn';
 import Recipes from './feature/recipes/Recipes';
 import DetailedRecipe from './feature/recipes/DetailedRecipe';
+import Form from './feature/form/Form';
 
 const App = () => {
 	return (
@@ -18,6 +19,7 @@ const App = () => {
 				<Route path="/login" component={LogIn} />
 				<Route path="/recipes/:recipeId" component={DetailedRecipe} />
 				<Route path="/recipes" component={Recipes} />
+				<Route path="/add" component={Form} />
 			</Switch>
 			<Footer />
 		</Router>
