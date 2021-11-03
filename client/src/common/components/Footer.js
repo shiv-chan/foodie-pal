@@ -5,7 +5,11 @@ const Footer = () => {
 	return (
 		<React.Fragment>
 			<CssBaseline />
-			<AppBar position="fixed" color="primary" sx={{ top: 'auto', bottom: 0 }}>
+			<AppBar
+				position="absolute"
+				color="primary"
+				sx={{ top: 'auto', bottom: 0 }}
+			>
 				<Toolbar></Toolbar>
 			</AppBar>
 		</React.Fragment>
