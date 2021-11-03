@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import {
-	CssBaseline,
 	Container,
 	Stack,
 	FormControl,
@@ -104,82 +103,76 @@ const SignUp = () => {
 	};
 
 	return (
-		<React.Fragment>
-			<CssBaseline />
-			<Container maxWidth="xs" sx={{ width: '80%', mt: 5 }}>
-				<Typography variant="h4" component="h1" align="center">
-					SIGN UP
-				</Typography>
-				<Stack sx={{ my: 5 }} spacing={4}>
-					<FormControl
+		<Container maxWidth="xs" sx={{ width: '80%', mt: 5 }}>
+			<Typography variant="h4" component="h1" align="center">
+				SIGN UP
+			</Typography>
+			<Stack sx={{ my: 5 }} spacing={4}>
+				<FormControl
+					error={!isValid.email || responseError.isError ? true : false}
+					variant="standard"
+				>
+					<InputLabel htmlFor="email">Email</InputLabel>
+					<Input
 						error={!isValid.email || responseError.isError ? true : false}
-						variant="standard"
-					>
-						<InputLabel htmlFor="email">Email</InputLabel>
-						<Input
-							error={!isValid.email || responseError.isError ? true : false}
-							name="email"
-							id="email"
-							type="email"
-							value={values.email}
-							required
-							onChange={handleChange}
-							onBlur={handleBlur}
-							fullWidth
-						/>
-						<FormHelperText error>
-							{isValid.email ? '' : 'Please enter a valid email.'}
-							{responseError.isError ? responseError.message : ''}
-						</FormHelperText>
-					</FormControl>
-					<FormControl
+						name="email"
+						id="email"
+						type="email"
+						value={values.email}
+						required
+						onChange={handleChange}
+						onBlur={handleBlur}
+						fullWidth
+					/>
+					<FormHelperText error>
+						{isValid.email ? '' : 'Please enter a valid email.'}
+						{responseError.isError ? responseError.message : ''}
+					</FormHelperText>
+				</FormControl>
+				<FormControl error={isValid.password ? false : true} variant="standard">
+					<InputLabel htmlFor="password">Password</InputLabel>
+					<Input
 						error={isValid.password ? false : true}
-						variant="standard"
-					>
-						<InputLabel htmlFor="password">Password</InputLabel>
-						<Input
-							error={isValid.password ? false : true}
-							name="password"
-							id="password"
-							type={values.showPassword ? 'text' : 'password'}
-							value={values.password}
-							required
-							fullWidth
-							onChange={handleChange}
-							onBlur={handleBlur}
-							endAdornment={
-								<InputAdornment position="end">
-									<IconButton onClick={handleClickVisibiltyIcon}>
-										{values.showPassword ? <Visibility /> : <VisibilityOff />}
-									</IconButton>
-								</InputAdornment>
-							}
-						/>
-						<FormHelperText error>
-							{isValid.password
-								? ''
-								: 'Password should be at least 6 characters.'}
-						</FormHelperText>
-					</FormControl>
-				</Stack>
-				<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-					<Button
-						disabled={
-							Object.values(isValid).every(Boolean) &&
-							values.email &&
-							values.password
-								? false
-								: true
+						name="password"
+						id="password"
+						type={values.showPassword ? 'text' : 'password'}
+						value={values.password}
+						required
+						fullWidth
+						onChange={handleChange}
+						onBlur={handleBlur}
+						endAdornment={
+							<InputAdornment position="end">
+								<IconButton onClick={handleClickVisibiltyIcon}>
+									{values.showPassword ? <Visibility /> : <VisibilityOff />}
+								</IconButton>
+							</InputAdornment>
 						}
-						variant="contained"
-						sx={{ width: '70%' }}
-						onClick={handleClickSignUpBtn}
-					>
-						sign up
-					</Button>
-				</Box>
-			</Container>
-		</React.Fragment>
+					/>
+					<FormHelperText error>
+						{isValid.password
+							? ''
+							: 'Password should be at least 6 characters.'}
+					</FormHelperText>
+				</FormControl>
+			</Stack>
+			<Box sx={{ display: 'flex', justifyContent: 'center' }}>
+				<Button
+					disabled={
+						Object.values(isValid).every(Boolean) &&
+						values.email &&
+						values.password
+							? false
+							: true
+					}
+					variant="contained"
+					sx={{ width: '70%' }}
+					onClick={handleClickSignUpBtn}
+				>
+					sign up
+				</Button>
+			</Box>
+		</Container>
 	);
 };
 
