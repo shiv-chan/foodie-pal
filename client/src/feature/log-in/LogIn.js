@@ -13,7 +13,6 @@ import {
 	Button,
 	Typography,
 	Box,
-	Slide,
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -60,8 +59,6 @@ const LogIn = () => {
 				logInSnackbar(res.data.message, 'success');
 				setUser({
 					email: values.email,
-					userName: '',
-					icon: '',
 					isLoggedIn: true,
 				});
 				history.push('/recipes');
@@ -75,11 +72,6 @@ const LogIn = () => {
 	function logInSnackbar(message, variant) {
 		enqueueSnackbar(message, {
 			variant,
-			anchorOrigin: {
-				vertical: 'top',
-				horizontal: 'center',
-			},
-			TransitionComponent: Slide,
 		});
 	}
 

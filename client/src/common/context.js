@@ -6,8 +6,6 @@ export const context = React.createContext();
 const ContextProvider = ({ children }) => {
 	const userState = useState({
 		email: '',
-		userName: '',
-		userIcon: '',
 		isLoggedIn: false,
 	});
 

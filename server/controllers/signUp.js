@@ -1,14 +1,11 @@
 import User from '../models/userModels.js';
-import bcrypt from 'bcrypt';
+import handleErrors from '../utils/handleErrors.js';
 
-export const createUser = async (req, res) => {
+export const signUp_post = async (req, res) => {
 	const { email, password } = req.body;
-	const saltPassword = await bcrypt.genSalt(10);
-	const securePassword = await bcrypt.hash(password, saltPassword);
-
 	const signedUpUser = new User({
-		email: email,
-		password: securePassword,
+		email,
+		password,
 	});
 
 	try {
@@ -17,9 +14,10 @@ export const createUser = async (req, res) => {
 			res.status(409).send({ message: 'This email is already registered.' });
 		} else {
 			await signedUpUser.save();
-			res.status(201).json(signedUpUser);
+			res.status(201).json({ message: 'Signed up successfully!' });
 		}
 	} catch (err) {
-		res.status(409).json({ message: err.message });
+		const message = handleErrors(err);
+		res.status(409).json({ message });
 	}
 };

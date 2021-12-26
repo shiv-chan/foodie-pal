@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { useHistory, Link } from 'react-router-dom';
+import validator from 'validator';
 import axios from 'axios';
 import {
 	Container,
@@ -16,18 +17,19 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { useSnackbar } from 'notistack';
+import { context } from '../../common/context';
 
 const SignUp = () => {
+	const { enqueueSnackbar } = useSnackbar();
+	const { userState } = useContext(context);
+	const [user, setUser] = userState;
+
 	// states
 	const [values, setValues] = useState({
 		email: '',
 		password: '',
 		showPassword: false,
-	});
-
-	const [responseError, setResponseError] = useState({
-		isError: false,
-		message: '',
 	});
 
 	const [isValid, setIsValid] = useState({
@@ -39,13 +41,6 @@ const SignUp = () => {
 
 	// for http request
 	const endpoint = 'http://localhost:5000/signup';
-
-	// regular expressions
-	const emailRegex = new RegExp(
-		'^[a-zA-Z0-9_+-]+(.[a-zA-Z0-9_+-]+)*@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*.)+[a-zA-Z]{2,}$',
-		'gm'
-	);
-	const passwordRegex = new RegExp('^(?=.*)(?=.*[a-zA-Zd]).{6,}$', 'gm');
 
 	// event handlers
 	const handleChange = (e) => {
@@ -71,36 +66,54 @@ const SignUp = () => {
 			password: values.password,
 		};
 
-		axios
-			.post(endpoint, registerUser)
-			.then(() => history.push('/recipes'))
-			.catch((err) => {
-				console.error(err.message);
-				setResponseError({
-					isError: true,
-					message: err.response.data.message || err.message,
+		try {
+			axios
+				.post(endpoint, registerUser)
+				.then((res) => {
+					signUpSnackbar(res.data.message, 'success');
+					history.push('/recipes');
+				})
+				.then(() => {
+					setUser({
+						email: values.email,
+						isLoggedIn: true,
+					});
+				})
+				.catch((err) => {
+					console.error(err.message);
+					signUpSnackbar(err.response?.data.message || err.message, 'error');
 				});
-				setTimeout(
-					() => setResponseError({ isError: false, message: '' }),
-					3000
-				);
-			});
+		} catch (err) {
+			console.error(err);
+			signUpSnackbar(err.response?.data.message || err.message, 'error');
+		}
 	};
 
 	// validate all input values
 	const validateInputValues = (e) => {
 		const { name, value } = e.currentTarget;
-		let targetRegex;
 		if (name === 'email') {
-			targetRegex = emailRegex;
+			setIsValid({ ...isValid, email: validator.isEmail(value) });
 		} else {
-			targetRegex = passwordRegex;
+			setIsValid({
+				...isValid,
+				password: validator.isStrongPassword(value, {
+					minLength: 6,
+					minLowercase: 0,
+					minUppercase: 0,
+					minNumbers: 0,
+					minSymbols: 0,
+				}),
+			});
 		}
-
-		targetRegex.test(value)
-			? setIsValid({ ...isValid, [name]: true })
-			: setIsValid({ ...isValid, [name]: false });
 	};
+
+	// snack bars
+	function signUpSnackbar(message, variant) {
+		enqueueSnackbar(message, {
+			variant,
+		});
+	}
 
 	return (
 		<Container maxWidth="xs" sx={{ width: '80%', mt: 5 }}>
@@ -108,13 +121,10 @@ const SignUp = () => {
 				SIGN UP
 			</Typography>
 			<Stack sx={{ my: 5 }} spacing={4}>
-				<FormControl
-					error={!isValid.email || responseError.isError ? true : false}
-					variant="standard"
-				>
+				<FormControl error={!isValid.email} variant="standard">
 					<InputLabel htmlFor="email">Email</InputLabel>
 					<Input
-						error={!isValid.email || responseError.isError ? true : false}
+						error={!isValid.email}
 						name="email"
 						id="email"
 						type="email"
@@ -126,13 +136,12 @@ const SignUp = () => {
 					/>
 					<FormHelperText error>
 						{isValid.email ? '' : 'Please enter a valid email.'}
-						{responseError.isError ? responseError.message : ''}
 					</FormHelperText>
 				</FormControl>
-				<FormControl error={isValid.password ? false : true} variant="standard">
+				<FormControl error={!isValid.password} variant="standard">
 					<InputLabel htmlFor="password">Password</InputLabel>
 					<Input
-						error={isValid.password ? false : true}
+						error={!isValid.password}
 						name="password"
 						id="password"
 						type={values.showPassword ? 'text' : 'password'}
@@ -150,9 +159,7 @@ const SignUp = () => {
 						}
 					/>
 					<FormHelperText error>
-						{isValid.password
-							? ''
-							: 'Password should be at least 6 characters.'}
+						{isValid.password ? '' : 'Password must be at least 6 characters.'}
 					</FormHelperText>
 				</FormControl>
 			</Stack>
@@ -171,6 +178,25 @@ const SignUp = () => {
 				>
 					sign up
 				</Button>
+			</Box>
+			<Box
+				mt={4}
+				display="flex"
+				flexDirection="column"
+				alignItems="center"
+				rowGap={1}
+			>
+				<Typography variant="body1" component="p" align="center">
+					Already have an account?
+				</Typography>
+				<Link
+					to="/login"
+					style={{
+						color: 'inherit',
+					}}
+				>
+					Log in
+				</Link>
 			</Box>
 		</Container>
 	);
