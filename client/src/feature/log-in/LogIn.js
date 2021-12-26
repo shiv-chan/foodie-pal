@@ -10,10 +10,10 @@ import {
 	Input,
 	InputAdornment,
 	IconButton,
-	Button,
 	Typography,
 	Box,
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { context } from '../../common/context';
@@ -25,6 +25,7 @@ const LogIn = () => {
 		password: '',
 		showPassword: false,
 	});
+	const [isLoading, setIsLoading] = useState(false);
 
 	const { enqueueSnackbar } = useSnackbar();
 	const history = useHistory();
@@ -47,25 +48,35 @@ const LogIn = () => {
 		}));
 	};
 
-	const handleClickLogInBtn = () => {
+	const handleClickLogInBtn = async () => {
+		setIsLoading(true);
+
 		const loggingInUser = {
 			email: values.email,
 			password: values.password,
 		};
 
-		axios
-			.post(endpoint, loggingInUser)
-			.then((res) => {
-				logInSnackbar(res.data.message, 'success');
-				setUser({
-					email: values.email,
-					isLoggedIn: true,
+		try {
+			await axios
+				.post(endpoint, loggingInUser)
+				.then((res) => {
+					logInSnackbar(res.data.message, 'success');
+					setUser({
+						email: values.email,
+						isLoggedIn: true,
+					});
+					history.push('/recipes');
+				})
+				.catch((err) => {
+					console.error(err.message);
+					logInSnackbar(err.response?.data.message || err.message, 'error');
 				});
-				history.push('/recipes');
-			})
-			.catch((err) => {
-				logInSnackbar(err.response.data.message, 'error');
-			});
+		} catch (err) {
+			console.error(err.message);
+			await logInSnackbar(err.response?.data.message || err.message, 'error');
+		}
+
+		setIsLoading(false);
 	};
 
 	// snack bars
@@ -114,14 +125,16 @@ const LogIn = () => {
 				</FormControl>
 			</Stack>
 			<Box display="flex" justifyContent="center">
-				<Button
+				<LoadingButton
+					loading={isLoading}
+					loadingPosition="start"
 					disabled={values.email && values.password ? false : true}
 					variant="contained"
 					sx={{ width: '70%' }}
 					onClick={handleClickLogInBtn}
 				>
 					log in
-				</Button>
+				</LoadingButton>
 			</Box>
 			<Box
 				mt={4}

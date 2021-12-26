@@ -10,11 +10,11 @@ import {
 	Input,
 	InputAdornment,
 	IconButton,
-	Button,
 	Typography,
 	Box,
 	FormHelperText,
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useSnackbar } from 'notistack';
@@ -31,6 +31,7 @@ const SignUp = () => {
 		password: '',
 		showPassword: false,
 	});
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [isValid, setIsValid] = useState({
 		email: true,
@@ -60,14 +61,16 @@ const SignUp = () => {
 		}));
 	};
 
-	const handleClickSignUpBtn = () => {
+	const handleClickSignUpBtn = async () => {
+		setIsLoading(true);
+
 		const registerUser = {
 			email: values.email,
 			password: values.password,
 		};
 
 		try {
-			axios
+			await axios
 				.post(endpoint, registerUser)
 				.then((res) => {
 					signUpSnackbar(res.data.message, 'success');
@@ -80,13 +83,15 @@ const SignUp = () => {
 					});
 				})
 				.catch((err) => {
-					console.error(err.message);
+					console.error(err);
 					signUpSnackbar(err.response?.data.message || err.message, 'error');
 				});
 		} catch (err) {
 			console.error(err);
-			signUpSnackbar(err.response?.data.message || err.message, 'error');
+			await signUpSnackbar(err.response?.data.message || err.message, 'error');
 		}
+
+		setIsLoading(false);
 	};
 
 	// validate all input values
@@ -164,7 +169,9 @@ const SignUp = () => {
 				</FormControl>
 			</Stack>
 			<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-				<Button
+				<LoadingButton
+					loading={isLoading}
+					loadingPosition="start"
 					disabled={
 						Object.values(isValid).every(Boolean) &&
 						values.email &&
@@ -177,7 +184,7 @@ const SignUp = () => {
 					onClick={handleClickSignUpBtn}
 				>
 					sign up
-				</Button>
+				</LoadingButton>
 			</Box>
 			<Box
 				mt={4}

@@ -1,7 +1,7 @@
 import User from '../models/userModels.js';
 import bcrypt from 'bcrypt';
 
-export const sendUser = async (req, res) => {
+export const login_post = async (req, res) => {
 	const { email, password } = req.body;
 
 	try {
