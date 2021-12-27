@@ -77,8 +77,6 @@ const Menu = ({ isOpen, setIsOpen }) => {
 		});
 	}
 
-	console.log(user);
-
 	const list = () => (
 		<Box sx={{ width: 250 }} role="presentation">
 			<List sx={{ marginBottom: 'auto' }}>
