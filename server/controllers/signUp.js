@@ -11,7 +11,7 @@ export const signUp_post = async (req, res) => {
 	try {
 		const user = await User.findOne({ email }).exec();
 		if (user) {
-			res.status(409).send({ message: 'This email is already registered.' });
+			res.status(409).json({ message: 'This email is already registered.' });
 		} else {
 			await signedUpUser.save();
 			res.status(201).json({ message: 'Signed up successfully!' });

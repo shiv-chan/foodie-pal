@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import React, { useContext, useLayoutEffect, useState } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 import { context } from '../../common/context';
 import {
 	Container,
@@ -17,12 +17,15 @@ import {
 } from '@mui/material';
 
 const DetailedRecipe = () => {
-	const { fakeData } = useContext(context);
+	const { userState, fakeData } = useContext(context);
+	const [user, setUser] = userState;
+	const { isLoggedIn } = user;
 	const { recipeId } = useParams();
 	const [rows, setRows] = useState([]);
 	const targetRecipe = fakeData.find((recipe) => recipe.id == recipeId);
 	const [serves, setServes] = useState(targetRecipe.serves);
 	const isBiggerLaptopSize = useMediaQuery('(min-width: 1200px)');
+	const history = useHistory();
 
 	function createData(name, quantity) {
 		return { name, quantity };
@@ -33,6 +36,10 @@ const DetailedRecipe = () => {
 			setRows((prevState) => [...prevState, createData(item[0], item[1])])
 		);
 	}, []);
+
+	useLayoutEffect(() => {
+		!isLoggedIn && history.push('/login');
+	}, [isLoggedIn, history]);
 
 	const handleChange = (e) => {
 		const { value } = e.currentTarget;

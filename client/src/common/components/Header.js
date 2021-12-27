@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
 	AppBar,
@@ -10,19 +10,23 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { context } from '../context';
+import Menu from './Menu';
 
 const Header = () => {
 	const { userState } = useContext(context);
 	const [user, setUser] = userState;
 	const { isLoggedIn } = user;
+	const [isOpen, setIsOpen] = useState(false);
 
 	const handleLogoutClick = () => {
 		setUser({
 			email: '',
-			userName: '',
-			userIcon: '',
 			isLoggedIn: false,
 		});
+	};
+
+	const handleMenuIconClick = () => {
+		setIsOpen((prev) => !prev);
 	};
 
 	return (
@@ -37,7 +41,8 @@ const Header = () => {
 						aria-label="menu"
 						sx={{ mr: 2 }}
 					>
-						<MenuIcon />
+						<MenuIcon onClick={handleMenuIconClick} />
+						<Menu isOpen={isOpen} setIsOpen={setIsOpen} />
 					</IconButton>
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
 						<Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
