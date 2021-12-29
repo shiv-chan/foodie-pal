@@ -1,4 +1,4 @@
-import React, { useState, useContext, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import axios from 'axios';
 import {
 	Container,
@@ -18,19 +18,16 @@ import {
 } from '@mui/material';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import AddPhotoAlternateRoundedIcon from '@mui/icons-material/AddPhotoAlternateRounded';
-import { context } from '../../common/context';
 import { useHistory } from 'react-router-dom';
 
 const Form = () => {
-	const { userState } = useContext(context);
-	const [user, setUser] = userState;
-	const { isLoggedIn } = user;
 	const history = useHistory();
 	const isBiggerMediumSize = useMediaQuery('(min-width: 900px)');
 
 	useLayoutEffect(() => {
-		!isLoggedIn && history.push('/login');
-	}, [isLoggedIn, history]);
+		const email = sessionStorage.getItem('email');
+		!email && history.push('/login');
+	}, [history]);
 
 	return (
 		<Container maxWidth="md" sx={{ width: '80%', mt: 5, pb: 8 }}>

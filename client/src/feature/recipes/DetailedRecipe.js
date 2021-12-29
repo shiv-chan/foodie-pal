@@ -17,9 +17,7 @@ import {
 } from '@mui/material';
 
 const DetailedRecipe = () => {
-	const { userState, fakeData } = useContext(context);
-	const [user, setUser] = userState;
-	const { isLoggedIn } = user;
+	const { fakeData } = useContext(context);
 	const { recipeId } = useParams();
 	const [rows, setRows] = useState([]);
 	const targetRecipe = fakeData.find((recipe) => recipe.id == recipeId);
@@ -38,8 +36,9 @@ const DetailedRecipe = () => {
 	}, []);
 
 	useLayoutEffect(() => {
-		!isLoggedIn && history.push('/login');
-	}, [isLoggedIn, history]);
+		const email = sessionStorage.getItem('email');
+		!email && history.push('/login');
+	}, [history]);
 
 	const handleChange = (e) => {
 		const { value } = e.currentTarget;

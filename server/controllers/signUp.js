@@ -13,8 +13,10 @@ export const signUp_post = async (req, res) => {
 		if (user) {
 			res.status(409).json({ message: 'This email is already registered.' });
 		} else {
-			await signedUpUser.save();
-			res.status(201).json({ message: 'Signed up successfully!' });
+			const newUser = await signedUpUser.save();
+			res
+				.status(201)
+				.json({ message: 'Signed up successfully!', email: newUser.email });
 		}
 	} catch (err) {
 		const message = handleErrors(err);

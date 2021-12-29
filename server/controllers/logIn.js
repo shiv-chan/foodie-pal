@@ -14,7 +14,9 @@ export const login_post = async (req, res) => {
 					throw new Error(err);
 				}
 				if (result) {
-					res.status(201).json({ message: 'Logged in successfully!' });
+					res
+						.status(201)
+						.json({ message: 'Logged in successfully!', email: user.email });
 				} else {
 					res
 						.status(403)

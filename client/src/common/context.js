@@ -1,19 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import fakeData from '../fakeData';
 
 export const context = React.createContext();
 
 const ContextProvider = ({ children }) => {
-	const userState = useState({
-		email: '',
-		isLoggedIn: false,
-	});
-
-	return (
-		<context.Provider value={{ userState, fakeData }}>
-			{children}
-		</context.Provider>
-	);
+	return <context.Provider value={{ fakeData }}>{children}</context.Provider>;
 };
 
 export default ContextProvider;

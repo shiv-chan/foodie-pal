@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
 	AppBar,
 	Toolbar,
@@ -9,20 +9,20 @@ import {
 	CssBaseline,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { context } from '../context';
 import Menu from './Menu';
 
 const Header = () => {
-	const { userState } = useContext(context);
-	const [user, setUser] = userState;
-	const { isLoggedIn } = user;
+	const location = useLocation();
 	const [isOpen, setIsOpen] = useState(false);
+	const [email, setEmail] = useState(sessionStorage.getItem('email'));
+
+	useEffect(() => {
+		setEmail(sessionStorage.getItem('email'));
+	}, [location.pathname]);
 
 	const handleLogoutClick = () => {
-		setUser({
-			email: '',
-			isLoggedIn: false,
-		});
+		sessionStorage.clear();
+		setEmail(null);
 	};
 
 	const handleMenuIconClick = () => {
@@ -42,7 +42,7 @@ const Header = () => {
 						sx={{ mr: 2 }}
 					>
 						<MenuIcon onClick={handleMenuIconClick} />
-						<Menu isOpen={isOpen} setIsOpen={setIsOpen} />
+						<Menu isOpen={isOpen} setIsOpen={setIsOpen} email={email} />
 					</IconButton>
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
 						<Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -50,7 +50,7 @@ const Header = () => {
 						</Link>
 					</Typography>
 					<Button color="inherit">
-						{isLoggedIn ? (
+						{email ? (
 							<Link
 								to="/login"
 								style={{ textDecoration: 'none', color: 'inherit' }}
