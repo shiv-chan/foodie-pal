@@ -5,18 +5,17 @@ import RecipeCard from './RecipeCard';
 import { useHistory } from 'react-router-dom';
 
 const Recipes = () => {
-	const { userState, fakeData } = useContext(context);
-	const [user, setUser] = userState;
-	const { isLoggedIn } = user;
+	const { fakeData } = useContext(context);
 	const history = useHistory();
 
 	useLayoutEffect(() => {
-		!isLoggedIn && history.push('/login');
-	}, [isLoggedIn, history]);
+		const email = sessionStorage.getItem('email');
+		!email && history.push('/login');
+	}, [history]);
 
 	return (
 		<Container>
-			<h1>This is recipes page. ({user.email})</h1>
+			<h1>This is recipes page. ({sessionStorage.getItem('email')})</h1>
 			<Grid container spacing={2}>
 				{fakeData.map((recipe) => (
 					<Grid item xs={12} md={6}>

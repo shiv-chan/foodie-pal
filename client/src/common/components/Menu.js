@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import {
 	Box,
 	List,
@@ -19,16 +19,12 @@ import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import ReportRoundedIcon from '@mui/icons-material/ReportRounded';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import { context } from '../context';
 import { useSnackbar } from 'notistack';
 
-const Menu = ({ isOpen, setIsOpen }) => {
+const Menu = ({ isOpen, setIsOpen, email }) => {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const history = useHistory();
 	const { enqueueSnackbar } = useSnackbar();
-	const { userState } = useContext(context);
-	const [user, setUser] = userState;
-	const { email } = user;
 
 	// for http request
 	const endpoint = 'http://localhost:5000/delete';
@@ -53,12 +49,9 @@ const Menu = ({ isOpen, setIsOpen }) => {
 				.then((res) => {
 					deleteSnackbar(res.data.message, 'success');
 					history.push('/');
-				})
-				.then(() => {
-					setUser({
-						email: '',
-						isLoggedIn: false,
-					});
+					sessionStorage.clear();
+					setIsDialogOpen(false);
+					setIsOpen(false);
 				})
 				.catch((err) => {
 					console.error(err);

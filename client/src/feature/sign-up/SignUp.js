@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import validator from 'validator';
 import axios from 'axios';
@@ -18,12 +18,9 @@ import { LoadingButton } from '@mui/lab';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useSnackbar } from 'notistack';
-import { context } from '../../common/context';
 
 const SignUp = () => {
 	const { enqueueSnackbar } = useSnackbar();
-	const { userState } = useContext(context);
-	const [user, setUser] = userState;
 
 	// states
 	const [values, setValues] = useState({
@@ -73,14 +70,9 @@ const SignUp = () => {
 			await axios
 				.post(endpoint, registerUser)
 				.then((res) => {
+					sessionStorage.setItem('email', res.data.email);
 					signUpSnackbar(res.data.message, 'success');
 					history.push('/recipes');
-				})
-				.then(() => {
-					setUser({
-						email: values.email,
-						isLoggedIn: true,
-					});
 				})
 				.catch((err) => {
 					console.error(err);
