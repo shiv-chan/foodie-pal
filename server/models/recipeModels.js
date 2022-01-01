@@ -1,16 +1,28 @@
 import mongoose from 'mongoose';
+import { nanoid } from 'nanoid';
 
 const recipeSchema = new mongoose.Schema({
+	id: {
+		type: String,
+		default: nanoid,
+	},
 	title: {
 		type: String,
 		required: true,
 	},
-	selectedFile: String, // image
+	subtitle: String,
+	imageId: String,
+	prepTime: Number,
+	totalTime: Number,
+	serves: {
+		type: Number,
+		required: true,
+	},
 	ingredients: Array,
-	notes: String,
+	instrunctions: String,
 	createdAt: {
 		type: Date,
-		default: new Date(),
+		default: Date.now,
 	},
 });
 
