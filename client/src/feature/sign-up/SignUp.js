@@ -17,6 +17,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded';
 import { useSnackbar } from 'notistack';
 
 const SignUp = () => {
@@ -174,6 +175,7 @@ const SignUp = () => {
 					variant="contained"
 					sx={{ width: '70%' }}
 					onClick={handleClickSignUpBtn}
+					startIcon={<AssignmentRoundedIcon />}
 				>
 					sign up
 				</LoadingButton>
