@@ -51,6 +51,10 @@ const Form = () => {
 		}
 	};
 
+	const handleOnClickPlusBtn = () => {
+		setNumOfIngredients((prevState) => prevState + 1);
+	};
+
 	console.log(values);
 
 	return (
@@ -143,6 +147,7 @@ const Form = () => {
 								color="primary"
 								area-lable="add ingredients"
 								component="span"
+								onClick={handleOnClickPlusBtn}
 							>
 								<AddCircleRoundedIcon />
 							</IconButton>
