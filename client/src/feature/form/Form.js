@@ -1,30 +1,32 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 import axios from 'axios';
 import {
 	Container,
 	Stack,
 	TextField,
-	FormControl,
-	InputLabel,
 	Input,
-	InputAdornment,
 	IconButton,
-	Button,
 	Typography,
 	Box,
-	FormHelperText,
 	Grid,
 } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import AddPhotoAlternateRoundedIcon from '@mui/icons-material/AddPhotoAlternateRounded';
+import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import { useHistory } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 const Form = () => {
+	const { enqueueSnackbar } = useSnackbar();
 	const history = useHistory();
+	const fileInputRef = useRef();
 
 	const [values, setValues] = useState({
+		author: sessionStorage.getItem('email'),
 		title: '',
 		subtitle: '',
+		imageUrl: '',
 		imageId: '',
 		prepTime: '',
 		totalTime: '',
@@ -32,8 +34,12 @@ const Form = () => {
 		ingredients: [],
 		instrunctions: '',
 	});
-	const [imageFile, setImageFile] = useState(null);
+	const [imageFile, setImageFile] = useState('');
 	const [numOfIngredients, setNumOfIngredients] = useState(3);
+	const [isLoading, setIsLoading] = useState(false);
+
+	// for http request
+	const endpoint = 'http://localhost:5000/recipes';
 
 	useLayoutEffect(() => {
 		const email = sessionStorage.getItem('email');
@@ -45,7 +51,7 @@ const Form = () => {
 
 		if (name === 'image') {
 			const files = e.target.files;
-			setImageFile(files);
+			setImageFile(files[0]);
 		} else {
 			setValues({ ...values, [name]: value });
 		}
@@ -55,12 +61,100 @@ const Form = () => {
 		setNumOfIngredients((prevState) => prevState + 1);
 	};
 
-	console.log(values);
+	const handleOnClickAddBtn = async () => {
+		setIsLoading(true);
+
+		try {
+			if (imageFile) {
+				const formDataUpload = new FormData();
+				formDataUpload.append('file', imageFile);
+				formDataUpload.append('upload_preset', 'FoodiePal');
+
+				await axios
+					.post(
+						`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
+						formDataUpload
+					)
+					.then(async (res) => {
+						await axios
+							.post(endpoint, {
+								...values,
+								imageUrl: res.data.secure_url,
+								imageId: res.data.public_id,
+							})
+							.then((res) => createRecipeSnackbar(res.data.message, 'success'))
+							.catch((err) => {
+								console.error(err);
+								createRecipeSnackbar(
+									err.response?.data.message || err.message,
+									'error'
+								);
+							});
+					})
+					.catch((err) => {
+						console.error(err.message);
+						throw new Error('Failed to upload an image...');
+					});
+			} else {
+				await axios
+					.post(endpoint, {
+						...values,
+					})
+					.then((res) => createRecipeSnackbar(res.data.message, 'success'))
+					.catch((err) => {
+						console.error(err);
+						throw new Error('Something went wrong...please try again.');
+					});
+			}
+
+			setValues({
+				author: sessionStorage.getItem('email'),
+				title: '',
+				subtitle: '',
+				imageId: '',
+				prepTime: '',
+				totalTime: '',
+				serves: '',
+				ingredients: [],
+				instrunctions: '',
+			});
+			setImageFile(null);
+			fileInputRef.current.children[0].value = null;
+			history.push('/recipes');
+		} catch (err) {
+			console.error(err);
+			await createRecipeSnackbar(
+				err.response?.data.message || err.message,
+				'error'
+			);
+		}
+
+		setIsLoading(false);
+	};
+
+	// snack bars
+	function createRecipeSnackbar(message, variant) {
+		enqueueSnackbar(message, {
+			variant,
+		});
+	}
+
+	// console.log(values);
 
 	return (
-		<Container maxWidth="md" sx={{ width: '80%', mt: 5, pb: 8 }}>
+		<Container
+			maxWidth="md"
+			sx={{
+				width: '80%',
+				mt: 5,
+				pb: 8,
+				display: 'flex',
+				alignItems: 'center',
+				flexDirection: 'column',
+			}}
+		>
 			<Typography variant="h6" component="h1" align="center">
-				Add Your Recipe
+				Create Your Recipe
 			</Typography>
 			<Stack sx={{ my: 5 }} spacing={2}>
 				<TextField
@@ -137,6 +231,7 @@ const Form = () => {
 						id="file-upload-btn"
 						type="file"
 						onChange={handleOnChange}
+						ref={fileInputRef}
 					/>
 				</Box>
 				<section style={{ marginTop: '1rem' }}>
@@ -176,6 +271,17 @@ const Form = () => {
 					</Stack>
 				</section>
 			</Stack>
+			<LoadingButton
+				loading={isLoading}
+				loadingPosition="start"
+				disabled={values.title && values.serves ? false : true}
+				variant="contained"
+				startIcon={<AddBoxRoundedIcon />}
+				sx={{ width: '70%', maxWidth: '300px', marginBottom: '2rem' }}
+				onClick={handleOnClickAddBtn}
+			>
+				Create Recipe
+			</LoadingButton>
 		</Container>
 	);
 };
