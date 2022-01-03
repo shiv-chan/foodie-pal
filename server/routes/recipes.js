@@ -1,8 +1,8 @@
 import express from 'express';
-import { getRecipes, createRecipe } from '../controllers/recipes.js';
+import { recipes_get, recipes_post } from '../controllers/recipes.js';
 const router = express.Router();
 
-router.get('/', getRecipes);
-router.post('/', createRecipe);
+router.get('/', recipes_get);
+router.post('/', recipes_post);
 
 export default router;

@@ -1,7 +1,8 @@
 // all handlers for routes
 import Recipe from '../models/recipeModels.js';
+import { handleAddRecipeErrors } from '../utils/handleErrors.js';
 
-export const getRecipes = async (req, res) => {
+export const recipes_get = async (req, res) => {
 	try {
 		const allRecipes = await Recipe.find();
 		console.log(allRecipes);
@@ -11,15 +12,20 @@ export const getRecipes = async (req, res) => {
 	}
 };
 
-export const createRecipe = async (req, res) => {
+export const recipes_post = async (req, res) => {
 	const recipe = req.body;
-
 	const newRecipe = new Recipe(recipe);
 
 	try {
-		await newRecipe.save();
-		res.status(201).json(newRecipe);
+		const addedRecipe = await newRecipe.save();
+		const id = addedRecipe._id;
+		if (id) {
+			res.status(201).json({ message: 'Created your recipe successfully!' });
+		} else {
+			res.status(409).json({ message: 'Failed to create your recipe...' });
+		}
 	} catch (err) {
-		res.status(409).json({ message: err.message });
+		const message = handleAddRecipeErrors(err);
+		res.status(409).json({ message });
 	}
 };
