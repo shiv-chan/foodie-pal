@@ -1,22 +1,22 @@
 import mongoose from 'mongoose';
-import { nanoid } from 'nanoid';
 
 const recipeSchema = new mongoose.Schema({
-	id: {
+	author: {
 		type: String,
-		default: nanoid,
+		required: [true, 'The user cannot be found.'],
 	},
 	title: {
 		type: String,
-		required: true,
+		required: [true, 'The title is required.'],
 	},
 	subtitle: String,
+	imageUrl: String,
 	imageId: String,
 	prepTime: Number,
 	totalTime: Number,
 	serves: {
 		type: Number,
-		required: true,
+		required: [true, 'The number of serves is required.'],
 	},
 	ingredients: Array,
 	instrunctions: String,
