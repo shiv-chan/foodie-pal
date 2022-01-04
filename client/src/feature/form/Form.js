@@ -146,11 +146,12 @@ const Form = () => {
 			maxWidth="md"
 			sx={{
 				width: '80%',
-				mt: 5,
+				mt: 10,
 				pb: 8,
 				display: 'flex',
 				alignItems: 'center',
 				flexDirection: 'column',
+				flex: '1 0 auto',
 			}}
 		>
 			<Typography variant="h6" component="h1" align="center">

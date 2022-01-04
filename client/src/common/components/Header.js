@@ -32,7 +32,7 @@ const Header = () => {
 	return (
 		<React.Fragment>
 			<CssBaseline />
-			<AppBar position="static">
+			<AppBar position="fixed">
 				<Toolbar>
 					<IconButton
 						size="large"

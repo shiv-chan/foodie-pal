@@ -50,7 +50,7 @@ const DetailedRecipe = () => {
 		isBiggerLaptopSize ? { height: '300px' } : { height: '200px' };
 
 	return (
-		<Container sx={{ maxWidth: '700px !important' }}>
+		<Container sx={{ maxWidth: '700px !important', flex: '1 0 auto', my: 10 }}>
 			<Grid container spacing={2} sx={{ my: 'auto', px: 1 }}>
 				<Grid item xs={6}>
 					<Typography gutterBottom variant="h4" component="h1" align="start">
