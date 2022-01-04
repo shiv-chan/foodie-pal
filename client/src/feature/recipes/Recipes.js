@@ -14,7 +14,7 @@ const Recipes = () => {
 	}, [history]);
 
 	return (
-		<Container>
+		<Container sx={{ flex: '1 0 auto', my: 5 }}>
 			<h1>This is recipes page. ({sessionStorage.getItem('email')})</h1>
 			<Grid container spacing={2}>
 				{fakeData.map((recipe) => (

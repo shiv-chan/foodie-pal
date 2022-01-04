@@ -82,7 +82,14 @@ const LogIn = () => {
 	}
 
 	return (
-		<Container maxWidth="xs" sx={{ width: '80%', mt: 5 }}>
+		<Container
+			maxWidth="xs"
+			sx={{
+				width: '80%',
+				mt: 10,
+				flex: '1 0 auto',
+			}}
+		>
 			<Typography variant="h4" component="h1" align="center">
 				LOGIN
 			</Typography>

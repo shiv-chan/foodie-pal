@@ -1,23 +1,16 @@
 import React from 'react';
-import {
-	AppBar,
-	Toolbar,
-	CssBaseline,
-	Box,
-	Typography,
-	Link,
-} from '@mui/material';
+import { Container, Box, Typography, Link } from '@mui/material';
 
 const Footer = () => {
 	return (
-		<React.Fragment>
-			<CssBaseline />
-			<AppBar
-				position="absolute"
-				color="primary"
-				sx={{ top: 'auto', bottom: 0 }}
+		<footer>
+			<Box
+				bgcolor="primary.main"
+				color="primary.contrastText"
+				paddingY="1.5rem"
+				width="100%"
 			>
-				<Toolbar sx={{ margin: 'auto' }}>
+				<Container>
 					<Box display="flex" justifyContent="center" alignItems="center">
 						<Typography variant="body1" component="p">
 							Made by{' '}
@@ -31,9 +24,9 @@ const Footer = () => {
 							</Link>
 						</Typography>
 					</Box>
-				</Toolbar>
-			</AppBar>
-		</React.Fragment>
+				</Container>
+			</Box>
+		</footer>
 	);
 };
 
