@@ -1,5 +1,5 @@
 import User from '../models/userModels.js';
-import handleErrors from '../utils/handleErrors.js';
+import { handleSignUpErrors } from '../utils/handleErrors.js';
 
 export const signUp_post = async (req, res) => {
 	const { email, password } = req.body;
@@ -19,7 +19,7 @@ export const signUp_post = async (req, res) => {
 				.json({ message: 'Signed up successfully!', email: newUser.email });
 		}
 	} catch (err) {
-		const message = handleErrors(err);
+		const message = handleSignUpErrors(err);
 		res.status(409).json({ message });
 	}
 };

@@ -16,6 +16,7 @@ import {
 import { LoadingButton } from '@mui/lab';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 
 const LogIn = () => {
 	// states
@@ -126,6 +127,7 @@ const LogIn = () => {
 					variant="contained"
 					sx={{ width: '70%' }}
 					onClick={handleClickLogInBtn}
+					startIcon={<LoginRoundedIcon />}
 				>
 					log in
 				</LoadingButton>
