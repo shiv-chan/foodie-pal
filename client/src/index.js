@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { SnackbarProvider } from 'notistack';
-import ContextProvider from './common/context';
 import { CssBaseline, Slide, Button } from '@mui/material';
+import { Provider } from 'react-redux';
+import store from './app/store';
 
 import App from './App';
 
@@ -12,7 +13,7 @@ const onClickDismiss = (key) => () => {
 };
 
 ReactDOM.render(
-	<ContextProvider>
+	<Provider store={store}>
 		<SnackbarProvider
 			maxSnack={3}
 			preventDuplicate
@@ -32,6 +33,6 @@ ReactDOM.render(
 			<CssBaseline />
 			<App />
 		</SnackbarProvider>
-	</ContextProvider>,
+	</Provider>,
 	document.getElementById('root')
 );
