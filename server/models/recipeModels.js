@@ -19,7 +19,7 @@ const recipeSchema = new mongoose.Schema({
 		required: [true, 'The number of serves is required.'],
 	},
 	ingredients: Array,
-	instrunctions: String,
+	instructions: String,
 	createdAt: {
 		type: Date,
 		default: Date.now,

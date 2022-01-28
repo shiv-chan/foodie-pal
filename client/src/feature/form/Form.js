@@ -237,17 +237,9 @@ const Form = () => {
 				</Box>
 				<section style={{ marginTop: '1rem' }}>
 					<Stack>
-						<label htmlFor="add-ingredients">
+						<Typography variant="subtitle1" component="h6">
 							Ingredients
-							<IconButton
-								color="primary"
-								area-lable="add ingredients"
-								component="span"
-								onClick={handleOnClickPlusBtn}
-							>
-								<AddCircleRoundedIcon />
-							</IconButton>
-						</label>
+						</Typography>
 						{[...Array(numOfIngredients)].map((ele, index) => (
 							<IngredientInputElements
 								key={index}
@@ -256,6 +248,17 @@ const Form = () => {
 								setValues={setValues}
 							/>
 						))}
+						<label htmlFor="add-ingredients">
+							<IconButton
+								color="primary"
+								area-lable="add ingredients"
+								component="span"
+								onClick={handleOnClickPlusBtn}
+							>
+								<AddCircleRoundedIcon />
+							</IconButton>
+							Add more
+						</label>
 					</Stack>
 				</section>
 				<section style={{ marginTop: '2rem' }}>

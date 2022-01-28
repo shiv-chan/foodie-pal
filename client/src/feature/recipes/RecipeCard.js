@@ -13,14 +13,14 @@ const RecipeCard = ({ recipeData }) => {
 	const { path } = useRouteMatch();
 
 	return (
-		<Link to={`${path}/${recipeData.id}`} style={{ textDecoration: 'none' }}>
+		<Link to={`${path}/${recipeData._id}`} style={{ textDecoration: 'none' }}>
 			<CardActionArea>
 				<Card sx={{ display: 'flex', height: 151 }}>
 					<CardMedia
 						component="img"
 						sx={{ width: 151, height: '100%' }}
-						image={recipeData.image}
-						alt="dish"
+						image={recipeData.imageUrl}
+						alt={recipeData.title}
 					/>
 					<Box sx={{ display: 'flex', flexDirection: 'column' }}>
 						<CardContent>

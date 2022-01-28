@@ -3,9 +3,9 @@ import Recipe from '../models/recipeModels.js';
 import { handleAddRecipeErrors } from '../utils/handleErrors.js';
 
 export const recipes_get = async (req, res) => {
+	const { email } = req.query;
 	try {
-		const allRecipes = await Recipe.find();
-		console.log(allRecipes);
+		const allRecipes = await Recipe.find({ author: email });
 		res.status(200).json(allRecipes);
 	} catch (err) {
 		res.status(404).json({ message: err.message });

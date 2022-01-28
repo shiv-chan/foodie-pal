@@ -1,6 +1,6 @@
-import React, { useContext, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { context } from '../../common/context';
+import { useSelector, useDispatch } from 'react-redux';
 import {
 	Container,
 	Grid,
@@ -12,109 +12,102 @@ import {
 	TableRow,
 	Box,
 	CardMedia,
-	TextField,
 	useMediaQuery,
 } from '@mui/material';
+import { getAllRecipes } from '../../common/recipesSlice';
 
 const DetailedRecipe = () => {
-	const { fakeData } = useContext(context);
+	const allRecipes = useSelector((state) => state.recipes.recipes);
 	const { recipeId } = useParams();
-	const [rows, setRows] = useState([]);
-	const targetRecipe = fakeData.find((recipe) => recipe.id == recipeId);
-	const [serves, setServes] = useState(targetRecipe.serves);
+	const targetRecipe = allRecipes.find((recipe) => recipe._id === recipeId);
 	const isBiggerLaptopSize = useMediaQuery('(min-width: 1200px)');
 	const history = useHistory();
-
-	function createData(name, quantity) {
-		return { name, quantity };
-	}
-
-	useLayoutEffect(() => {
-		targetRecipe.ingredients.map((item) =>
-			setRows((prevState) => [...prevState, createData(item[0], item[1])])
-		);
-	}, []);
+	const dispatch = useDispatch();
+	const [instructionsEle, setInstructionsEle] = useState(null);
 
 	useLayoutEffect(() => {
 		const email = sessionStorage.getItem('email');
 		!email && history.push('/login');
-	}, [history]);
+		dispatch(getAllRecipes({ email }));
+	}, [history, dispatch]);
 
-	const handleChange = (e) => {
-		const { value } = e.currentTarget;
-		setServes(value);
+	// convert instruction string to HTML elements
+	const convertStringToHTML = (str) => {
+		const arr = str.split('\n');
+		const elements = arr
+			.map((ele) => {
+				return `<p>${ele}</p>`;
+			})
+			.join('');
+
+		if (instructionsEle) {
+			instructionsEle.innerHTML = elements;
+		} else {
+			return 'Loading...';
+		}
 	};
 
 	// recipe image size
 	const recipeImageSize = () =>
 		isBiggerLaptopSize ? { height: '300px' } : { height: '200px' };
 
-	return (
+	return !allRecipes.length ? null : (
 		<Container sx={{ maxWidth: '700px !important', flex: '1 0 auto', my: 10 }}>
 			<Grid container spacing={2} sx={{ my: 'auto', px: 1 }}>
 				<Grid item xs={6}>
-					<Typography gutterBottom variant="h4" component="h1" align="start">
+					<Typography gutterBottom variant="h4" component="h1" align="left">
 						{targetRecipe.title}
 					</Typography>
 					<Typography
 						variant="subtitle1"
 						component="p"
-						align="start"
+						align="left"
 						sx={{ fontStyle: 'italic' }}
 					>
 						{targetRecipe.subtitle}
 					</Typography>
 					<Box sx={{ mt: 2 }}>
 						{targetRecipe.prepTime ? (
-							<Typography variant="subtitle2" component="p" align="start">
-								Prep Time: {targetRecipe.prepTime}
+							<Typography variant="subtitle2" component="p" align="left">
+								Prep Time: {targetRecipe.prepTime}{' '}
+								{targetRecipe.prepTime > 1 ? 'mins' : 'min'}
 							</Typography>
 						) : (
 							''
 						)}
-						<Typography variant="subtitle2" component="p" align="start">
-							Total Time: {targetRecipe.totalTime}
+						<Typography variant="subtitle2" component="p" align="left">
+							Total Time: {targetRecipe.totalTime}{' '}
+							{targetRecipe.totalTime > 1 ? 'mins' : 'min'}
+						</Typography>
+						<Typography variant="subtitle2" component="p" align="left">
+							Serve: {targetRecipe.serves}
 						</Typography>
 					</Box>
 				</Grid>
 				<Grid item xs={6} sx={recipeImageSize()}>
 					<CardMedia
 						component="img"
-						image={targetRecipe.image}
+						image={targetRecipe.imageUrl}
 						alt={targetRecipe.title}
 						sx={{ borderRadius: '15px', objectFit: 'cover', height: '100%' }}
 					/>
 				</Grid>
-				<Grid item xs={12} sx={{ my: 2 }}>
-					<TextField
-						id="serves"
-						label="Serves"
-						type="number"
-						InputLabelProps={{
-							shrink: true,
-						}}
-						variant="standard"
-						onChange={handleChange}
-						value={serves}
-						size="small"
-					/>
-				</Grid>
 				<Grid item xs={12} sx={{ mt: 2 }}>
-					<TableContainer component="table">
+					<TableContainer>
 						<Table size="small">
 							<TableBody>
-								{rows.map((row) => (
+								{targetRecipe.ingredients.map((ele) => (
 									<TableRow
-										key={row.name}
+										key={ele.index}
 										sx={{
 											'&:last-child td, &:last-child th': { border: 0 },
 											overflowWrap: 'anywhere',
 										}}
 									>
 										<TableCell component="th" scope="row">
-											{row.name}
+											{ele.ingredient}
 										</TableCell>
-										<TableCell align="right">{row.quantity}</TableCell>
+										<TableCell align="right">{ele.quantity}</TableCell>
 									</TableRow>
 								))}
 							</TableBody>
@@ -122,7 +115,16 @@ const DetailedRecipe = () => {
 					</TableContainer>
 				</Grid>
 				<Grid item xs={12} sx={{ mt: 4 }}>
-					{targetRecipe.instructions}
+					<Typography
+						gutterBottom
+						variant="body1"
+						component="div"
+						align="left"
+						ref={(node) => setInstructionsEle(node)}
+						id="typo"
+					>
+						{convertStringToHTML(targetRecipe.instructions)}
+					</Typography>
 				</Grid>
 			</Grid>
 		</Container>
