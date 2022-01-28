@@ -8,7 +8,6 @@ import LogIn from './feature/log-in/LogIn';
 import Recipes from './feature/recipes/Recipes';
 import DetailedRecipe from './feature/recipes/DetailedRecipe';
 import Form from './feature/form/Form';
-import { Container } from '@mui/material';
 import './App.css';
 
 const App = () => {
