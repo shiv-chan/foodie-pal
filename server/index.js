@@ -6,6 +6,7 @@ import recipeRoutes from './routes/recipes.js';
 import signUpRoutes from './routes/signUp.js';
 import logInRoutes from './routes/logIn.js';
 import deleteAccountRoutes from './routes/deleteAccount.js';
+import deleteRecipe from './routes/deleteRecipe.js';
 
 const app = express();
 dotenv.config();
@@ -21,6 +22,7 @@ app.use('/recipes', recipeRoutes);
 app.use('/signup', signUpRoutes);
 app.use('/login', logInRoutes);
 app.use('/delete', deleteAccountRoutes);
+app.use('/recipes/delete', deleteRecipe);
 
 const DATABASE_URL = process.env.DATABASE_URL;
 const PORT = process.env.PORT || 5000;
