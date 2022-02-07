@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const endpoint = 'http://localhost:5000/recipes';
+const endpoint = 'https://foodie-pal-backend.herokuapp.com/recipes';
 
 export const getAllRecipes = createAsyncThunk(
 	'recipes/getAllRecipes',

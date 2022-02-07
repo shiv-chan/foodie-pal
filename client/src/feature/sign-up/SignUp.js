@@ -39,7 +39,7 @@ const SignUp = () => {
 	const history = useHistory();
 
 	// for http request
-	const endpoint = 'http://localhost:5000/signup';
+	const endpoint = 'https://foodie-pal-backend.herokuapp.com/signup';
 
 	// event handlers
 	const handleChange = (e) => {

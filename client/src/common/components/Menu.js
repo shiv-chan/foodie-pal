@@ -27,7 +27,7 @@ const Menu = ({ isOpen, setIsOpen, email }) => {
 	const { enqueueSnackbar } = useSnackbar();
 
 	// for http request
-	const endpoint = 'http://localhost:5000/delete';
+	const endpoint = 'https://foodie-pal-backend.herokuapp.com/delete';
 
 	const handleListItemButtonClick = (path) => {
 		history.push(path);

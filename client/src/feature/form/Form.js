@@ -54,7 +54,7 @@ const Form = () => {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 
 	// for http request
-	const endpoint = 'http://localhost:5000/recipes';
+	const endpoint = 'https://foodie-pal-backend.herokuapp.com/recipes';
 
 	useLayoutEffect(() => {
 		const email = sessionStorage.getItem('email');
