@@ -86,7 +86,7 @@ const LogIn = () => {
 			maxWidth="xs"
 			sx={{
 				width: '80%',
-				mt: 10,
+				mt: 15,
 				flex: '1 0 auto',
 			}}
 		>
