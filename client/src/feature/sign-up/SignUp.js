@@ -199,6 +199,18 @@ const SignUp = () => {
 					Log in
 				</Link>
 			</Box>
+			<Box
+				mt={4}
+				display="flex"
+				flexDirection="column"
+				alignItems="center"
+				rowGap={1}
+			>
+				<Typography variant="body1" component="p" align="start">
+					If you wanna just try it out, you can login as a test user. Please
+					skip singning up and go to Login.
+				</Typography>
+			</Box>
 		</Container>
 	);
 };

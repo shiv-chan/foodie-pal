@@ -158,6 +158,20 @@ const LogIn = () => {
 					Create an account
 				</Link>
 			</Box>
+			<Box
+				mt={4}
+				display="flex"
+				flexDirection="column"
+				alignItems="center"
+				rowGap={1}
+			>
+				<Typography variant="body1" component="p" align="start">
+					If you just wanna play around, you can login as a test user. <br />
+					Email Address: <b>helloworld@mail.com</b>
+					<br />
+					Password: <b>demo12345</b>
+				</Typography>
+			</Box>
 		</Container>
 	);
 };
