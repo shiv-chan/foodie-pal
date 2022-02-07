@@ -114,7 +114,7 @@ const SignUp = () => {
 	}
 
 	return (
-		<Container maxWidth="xs" sx={{ width: '80%', mt: 10, flex: '1 0 auto' }}>
+		<Container maxWidth="xs" sx={{ width: '80%', mt: 15, flex: '1 0 auto' }}>
 			<Typography variant="h4" component="h1" align="center">
 				SIGN UP
 			</Typography>
@@ -198,6 +198,18 @@ const SignUp = () => {
 				>
 					Log in
 				</Link>
+			</Box>
+			<Box
+				mt={4}
+				display="flex"
+				flexDirection="column"
+				alignItems="center"
+				rowGap={1}
+			>
+				<Typography variant="body1" component="p" align="start">
+					If you wanna just try it out, you can login as a test user. Please
+					skip singning up and go to Login.
+				</Typography>
 			</Box>
 		</Container>
 	);
