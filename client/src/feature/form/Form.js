@@ -14,13 +14,18 @@ import { LoadingButton } from '@mui/lab';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import AddPhotoAlternateRoundedIcon from '@mui/icons-material/AddPhotoAlternateRounded';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { useSelector } from 'react-redux';
+import IngredientInputElements from './IngredientInputElements';
+var sha1 = require('sha-1');
 
 const Form = () => {
 	const { enqueueSnackbar } = useSnackbar();
 	const history = useHistory();
 	const fileInputRef = useRef();
+	const { recipeId } = useParams();
+	const allRecipes = useSelector((state) => state.recipes.recipes);
 
 	const [values, setValues] = useState({
 		author: sessionStorage.getItem('email'),
@@ -32,7 +37,7 @@ const Form = () => {
 		totalTime: '',
 		serves: '',
 		ingredients: [],
-		instrunctions: '',
+		instructions: '',
 	});
 	const [imageFile, setImageFile] = useState('');
 	const [numOfIngredients, setNumOfIngredients] = useState(3);
@@ -44,7 +49,28 @@ const Form = () => {
 	useLayoutEffect(() => {
 		const email = sessionStorage.getItem('email');
 		!email && history.push('/login');
-	}, [history]);
+
+		if (recipeId) {
+			const targetRecipe = allRecipes.find((recipe) => recipe._id === recipeId);
+
+			if (targetRecipe) {
+				setValues({
+					...values,
+					title: targetRecipe.title,
+					subtitle: targetRecipe.subtitle,
+					imageUrl: targetRecipe.imageUrl,
+					imageId: targetRecipe.imageId,
+					prepTime: targetRecipe.prepTime,
+					totalTime: targetRecipe.totalTime,
+					serves: targetRecipe.serves,
+					ingredients: targetRecipe.ingredients,
+					instructions: targetRecipe.instructions,
+				});
+
+				setNumOfIngredients(targetRecipe.ingredients.length);
+			}
+		}
+	}, [history, allRecipes, recipeId]);
 
 	const handleOnChange = (e) => {
 		const { name, value } = e.target;
@@ -66,6 +92,29 @@ const Form = () => {
 
 		try {
 			if (imageFile) {
+				if (values.imageId) {
+					const timestamp = Date.now();
+					const formDataDestroy = new FormData();
+
+					formDataDestroy.append('public_id', values.imageId);
+					formDataDestroy.append(
+						'api_key',
+						`${process.env.REACT_APP_CLOUDINARY_API_KEY}`
+					);
+					formDataDestroy.append('timestamp', timestamp.toString());
+					formDataDestroy.append(
+						'signature',
+						sha1(
+							`public_id=${values.imageId}&timestamp=${timestamp}${process.env.REACT_APP_CLOUDINARY_API_SECRET}`
+						)
+					);
+
+					await axios.post(
+						`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/destroy`,
+						formDataDestroy
+					);
+				}
+
 				const formDataUpload = new FormData();
 				formDataUpload.append('file', imageFile);
 				formDataUpload.append('upload_preset', 'FoodiePal');
@@ -81,6 +130,7 @@ const Form = () => {
 								...values,
 								imageUrl: res.data.secure_url,
 								imageId: res.data.public_id,
+								_id: recipeId,
 							})
 							.then((res) => createRecipeSnackbar(res.data.message, 'success'))
 							.catch((err) => {
@@ -99,6 +149,7 @@ const Form = () => {
 				await axios
 					.post(endpoint, {
 						...values,
+						_id: recipeId,
 					})
 					.then((res) => createRecipeSnackbar(res.data.message, 'success'))
 					.catch((err) => {
@@ -116,7 +167,7 @@ const Form = () => {
 				totalTime: '',
 				serves: '',
 				ingredients: [],
-				instrunctions: '',
+				instructions: '',
 			});
 			setImageFile(null);
 			fileInputRef.current.children[0].value = null;
@@ -138,8 +189,6 @@ const Form = () => {
 			variant,
 		});
 	}
-
-	// console.log(values);
 
 	return (
 		<Container
@@ -271,6 +320,7 @@ const Form = () => {
 							rows={10}
 							name="instructions"
 							onChange={handleOnChange}
+							value={values.instructions}
 						/>
 					</Stack>
 				</section>
@@ -284,71 +334,10 @@ const Form = () => {
 				sx={{ width: '70%', maxWidth: '300px', marginBottom: '2rem' }}
 				onClick={handleOnClickAddBtn}
 			>
-				Create Recipe
+				{recipeId ? 'Update Recipe' : 'Create Recipe'}
 			</LoadingButton>
 		</Container>
 	);
 };
 
 export default Form;
-
-const IngredientInputElements = ({ index, values, setValues }) => {
-	const [ingredient, setIngredient] = useState({
-		index: '',
-		ingredient: '',
-		quantity: '',
-	});
-
-	const handleOnChange = (e, index) => {
-		const { name, value } = e.target;
-
-		if (name === 'ingredient') {
-			setIngredient({ ...ingredient, index, ingredient: value });
-		} else if (name === 'quantity') {
-			setIngredient({ ...ingredient, index, quantity: value });
-		}
-	};
-
-	const handleOnBlur = (index) => {
-		const targetIngredientIndex = values.ingredients.findIndex(
-			(ele) => ele.index === index
-		);
-
-		console.log(targetIngredientIndex, ingredient);
-		if (targetIngredientIndex >= 0) {
-			values.ingredients.splice(targetIngredientIndex, 1, ingredient);
-			setValues({
-				...values,
-				ingredients: values.ingredients,
-			});
-		} else if (ingredient.index !== '') {
-			setValues({
-				...values,
-				ingredients: [...values.ingredients, ingredient],
-			});
-		}
-	};
-
-	return (
-		<Box sx={{ display: 'flex', gap: 3, marginBottom: '1.5rem' }}>
-			<TextField
-				label="Ingredient"
-				name="ingredient"
-				variant="standard"
-				fullWidth
-				value={ingredient.ingredient}
-				onChange={(e) => handleOnChange(e, index)}
-				onBlur={() => handleOnBlur(index)}
-			/>
-			<TextField
-				label="Quantity"
-				name="quantity"
-				variant="standard"
-				fullWidth
-				value={ingredient.quantity}
-				onChange={(e) => handleOnChange(e, index)}
-				onBlur={() => handleOnBlur(index)}
-			/>
-		</Box>
-	);
-};

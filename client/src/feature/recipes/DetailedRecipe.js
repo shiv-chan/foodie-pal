@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
 	Container,
@@ -13,8 +13,11 @@ import {
 	Box,
 	CardMedia,
 	useMediaQuery,
+	Button,
 } from '@mui/material';
 import { getAllRecipes } from '../../common/recipesSlice';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 
 const DetailedRecipe = () => {
 	const allRecipes = useSelector((state) => state.recipes.recipes);
@@ -52,7 +55,26 @@ const DetailedRecipe = () => {
 		isBiggerLaptopSize ? { height: '300px' } : { height: '200px' };
 
 	return !allRecipes.length ? null : (
-		<Container sx={{ maxWidth: '700px !important', flex: '1 0 auto', my: 10 }}>
+		<Container
+			sx={{
+				maxWidth: '700px !important',
+				flex: '1 0 auto',
+				my: 10,
+			}}
+		>
+			<Box
+				sx={{ position: 'relative', marginBottom: '1rem', fontWeight: 'bold' }}
+			>
+				<Link to="/recipes" style={{ textDecoration: 'none' }}>
+					<Button startIcon={<ArrowBackRoundedIcon />}>Back to recipes</Button>
+				</Link>
+				<Link
+					to={`/edit/${recipeId}`}
+					style={{ textDecoration: 'none', position: 'absolute', right: 0 }}
+				>
+					<Button startIcon={<EditRoundedIcon />}>Edit</Button>
+				</Link>
+			</Box>
 			<Grid container spacing={2} sx={{ my: 'auto', px: 1 }}>
 				<Grid item xs={6}>
 					<Typography gutterBottom variant="h4" component="h1" align="left">
@@ -87,7 +109,10 @@ const DetailedRecipe = () => {
 				<Grid item xs={6} sx={recipeImageSize()}>
 					<CardMedia
 						component="img"
-						image={targetRecipe.imageUrl}
+						image={
+							targetRecipe.imageUrl ||
+							'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'
+						}
 						alt={targetRecipe.title}
 						sx={{ borderRadius: '15px', objectFit: 'cover', height: '100%' }}
 					/>
