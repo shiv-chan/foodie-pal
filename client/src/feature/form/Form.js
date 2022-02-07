@@ -9,15 +9,24 @@ import {
 	Typography,
 	Box,
 	Grid,
+	Button,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogContentText,
+	DialogActions,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import AddPhotoAlternateRoundedIcon from '@mui/icons-material/AddPhotoAlternateRounded';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Link } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { useSelector } from 'react-redux';
 import IngredientInputElements from './IngredientInputElements';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import ReportRoundedIcon from '@mui/icons-material/ReportRounded';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 var sha1 = require('sha-1');
 
 const Form = () => {
@@ -42,6 +51,7 @@ const Form = () => {
 	const [imageFile, setImageFile] = useState('');
 	const [numOfIngredients, setNumOfIngredients] = useState(3);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
 
 	// for http request
 	const endpoint = 'http://localhost:5000/recipes';
@@ -85,6 +95,14 @@ const Form = () => {
 
 	const handleOnClickPlusBtn = () => {
 		setNumOfIngredients((prevState) => prevState + 1);
+	};
+
+	const handleClickListDeleteRecipe = () => {
+		setIsDialogOpen(true);
+	};
+
+	const handleCloseDialog = () => {
+		setIsDialogOpen(false);
 	};
 
 	const handleOnClickAddBtn = async () => {
@@ -183,6 +201,28 @@ const Form = () => {
 		setIsLoading(false);
 	};
 
+	const handleClickDeleteButton = async () => {
+		try {
+			await axios
+				.post(`${endpoint}/delete`, { _id: recipeId })
+				.then((res) => {
+					createRecipeSnackbar(res.data.message, 'success');
+					history.push('/recipes');
+					setIsDialogOpen(false);
+				})
+				.catch((err) => {
+					console.error(err);
+					createRecipeSnackbar(
+						err.response?.data.message || err.message,
+						'error'
+					);
+				});
+		} catch (err) {
+			console.error(err);
+			createRecipeSnackbar(err.response?.data.message || err.message, 'error');
+		}
+	};
+
 	// snack bars
 	function createRecipeSnackbar(message, variant) {
 		enqueueSnackbar(message, {
@@ -203,6 +243,12 @@ const Form = () => {
 				flex: '1 0 auto',
 			}}
 		>
+			<Link
+				to="/recipes"
+				style={{ textDecoration: 'none', alignSelf: 'flex-start' }}
+			>
+				<Button startIcon={<ArrowBackRoundedIcon />}>Back to recipes</Button>
+			</Link>
 			<Typography variant="h6" component="h1" align="center">
 				Create Your Recipe
 			</Typography>
@@ -331,11 +377,53 @@ const Form = () => {
 				disabled={values.title && values.serves ? false : true}
 				variant="contained"
 				startIcon={<AddBoxRoundedIcon />}
-				sx={{ width: '70%', maxWidth: '300px', marginBottom: '2rem' }}
+				sx={{ width: '70%', maxWidth: '300px', margin: '2rem 0' }}
 				onClick={handleOnClickAddBtn}
 			>
 				{recipeId ? 'Update Recipe' : 'Create Recipe'}
 			</LoadingButton>
+			{recipeId ? (
+				<Button
+					variant="contained"
+					color="warning"
+					startIcon={<DeleteRoundedIcon />}
+					sx={{ width: '70%', maxWidth: '300px', marginBottom: '2rem' }}
+					onClick={handleClickListDeleteRecipe}
+				>
+					Delete Recipe
+				</Button>
+			) : (
+				''
+			)}
+			<Dialog
+				open={isDialogOpen}
+				onClose={handleCloseDialog}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+			>
+				<DialogTitle
+					id="alert-dialog-title"
+					color="error"
+					display="flex"
+					alignItems="center"
+				>
+					<ReportRoundedIcon />
+					{'Delete Recipe'}
+				</DialogTitle>
+				<DialogContent>
+					<DialogContentText id="alert-dialog-description">
+						Are you sure you want to delete this recipe?
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleCloseDialog} sx={{ color: 'gray' }}>
+						Cancel
+					</Button>
+					<Button color="error" onClick={handleClickDeleteButton}>
+						Delete Recipe
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Container>
 	);
 };

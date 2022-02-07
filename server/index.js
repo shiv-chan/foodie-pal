@@ -22,7 +22,7 @@ app.use('/recipes', recipeRoutes);
 app.use('/signup', signUpRoutes);
 app.use('/login', logInRoutes);
 app.use('/delete', deleteAccountRoutes);
-app.use('/recipe/delete', deleteRecipe);
+app.use('/recipes/delete', deleteRecipe);
 
 const DATABASE_URL = process.env.DATABASE_URL;
 const PORT = process.env.PORT || 5000;
