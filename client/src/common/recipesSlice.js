@@ -8,7 +8,7 @@ export const getAllRecipes = createAsyncThunk(
 	async ({ email }) => {
 		try {
 			const res = await axios.get(`${endpoint}?email=${email}`);
-			console.log(res.data);
+			// console.log(res.data);
 			return res.data;
 		} catch (err) {
 			console.error(`Error: ${err.response.data.message || err}`);

@@ -21,6 +21,7 @@ const App = () => {
 				<Route path="/recipes/:recipeId" component={DetailedRecipe} />
 				<Route path="/recipes" component={Recipes} />
 				<Route path="/add" component={Form} />
+				<Route path="/edit/:recipeId" component={Form} />
 			</Switch>
 			<Footer />
 		</Router>

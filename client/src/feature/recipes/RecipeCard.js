@@ -19,7 +19,10 @@ const RecipeCard = ({ recipeData }) => {
 					<CardMedia
 						component="img"
 						sx={{ width: 151, height: '100%' }}
-						image={recipeData.imageUrl}
+						image={
+							recipeData.imageUrl ||
+							'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg'
+						}
 						alt={recipeData.title}
 					/>
 					<Box sx={{ display: 'flex', flexDirection: 'column' }}>

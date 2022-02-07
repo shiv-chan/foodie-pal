@@ -4,7 +4,6 @@ import {
 	AppBar,
 	Toolbar,
 	Typography,
-	IconButton,
 	Button,
 	CssBaseline,
 } from '@mui/material';
@@ -34,16 +33,11 @@ const Header = () => {
 			<CssBaseline />
 			<AppBar position="fixed">
 				<Toolbar>
-					<IconButton
-						size="large"
-						edge="start"
-						color="inherit"
-						aria-label="menu"
-						sx={{ mr: 2 }}
-					>
-						<MenuIcon onClick={handleMenuIconClick} />
-						<Menu isOpen={isOpen} setIsOpen={setIsOpen} email={email} />
-					</IconButton>
+					<MenuIcon
+						sx={{ mr: 2, cursor: 'pointer' }}
+						onClick={handleMenuIconClick}
+					/>
+					<Menu isOpen={isOpen} setIsOpen={setIsOpen} email={email} />
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
 						<Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
 							Foodie Pal

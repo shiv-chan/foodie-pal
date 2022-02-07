@@ -14,18 +14,32 @@ export const recipes_get = async (req, res) => {
 
 export const recipes_post = async (req, res) => {
 	const recipe = req.body;
-	const newRecipe = new Recipe(recipe);
 
-	try {
-		const addedRecipe = await newRecipe.save();
-		const id = addedRecipe._id;
-		if (id) {
-			res.status(201).json({ message: 'Created your recipe successfully!' });
-		} else {
-			res.status(409).json({ message: 'Failed to create your recipe...' });
+	if (recipe._id) {
+		try {
+			const targetRecipe = await Recipe.findOne({ _id: recipe._id });
+			const updatedUser = await Recipe.updateOne(
+				{ _id: recipe._id },
+				recipe
+			).exec();
+			res.status(201).json({ message: 'Updated your recipe successfully!' });
+		} catch (err) {
+			res.status(409).json({ message: 'Failed to update your recipe...' });
 		}
-	} catch (err) {
-		const message = handleAddRecipeErrors(err);
-		res.status(409).json({ message });
+	} else {
+		try {
+			delete recipe._id;
+			const newRecipe = new Recipe(recipe);
+			const addedRecipe = await newRecipe.save();
+			const id = addedRecipe._id;
+			if (id) {
+				res.status(201).json({ message: 'Created your recipe successfully!' });
+			} else {
+				res.status(409).json({ message: 'Failed to create your recipe...' });
+			}
+		} catch (err) {
+			const message = handleAddRecipeErrors(err);
+			res.status(409).json({ message });
+		}
 	}
 };
